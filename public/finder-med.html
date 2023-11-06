@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HelpRxHaven</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    
+
+    <!-- =============================StyleSheet======================================== -->
+    <style>
+  .bg-color{
+            background-color: #1f2f3f;;
+            color: white;
+            /* background-color: #97beb1;; */
+        }
+      
+
+        .custom-bg-color {
+            background-color: #1f2f3f;
+            color: white;
+            border: #1f2f3f 2px solid;
+        }
+
+        .custom-bg-color:hover {
+            background-color: #425b77;
+            border: #38434e 2px solid;
+            color: #ffffff;
+            
+        }
+        /* custom-bg-color:{
+            
+            background-color: #425b77;
+            color: #ffffff;
+        } */
+        
+        
+    </style>
+    <!-- =============================Java Script======================================== -->
+    <!-- <script src="script/angular.min.js"></script> -->
+    <script>
+        var module = angular.module("mymodule", []);
+
+        module.controller("mycontroller", function ($scope, $http) {
+
+
+
+
+
+            // ==================show city==================
+            $scope.selcity = " ";
+            $scope.showCity = function () {
+                // alert($scope.selcity);
+                //AJAX Request
+            }
+            // ==================show medicin==================
+            $scope.selmed = " ";
+            $scope.showmed = function () {
+                // alert($scope.selmed);
+                //AJAX Request
+            }
+            // ==================select city==================
+            $scope.mediJSONary = "";
+            $scope.fetchMeds = function () {
+                var url = "/get-medicines";
+                $http.get(url).then(done, fail);
+                function done(response) {
+                    // alert(JSON.stringify(response.data));
+
+                    $scope.mediJSONary = response.data;
+                }
+                function fail(response) {
+                    alert(JSON.stringify(response.data))
+                }
+            }
+            //-----------------fetch city-------------
+            $scope.cityJSONAry;
+            $scope.fetchCities = function () {
+                var url = "/get-citiess";
+                $http.get(url).then(done, fail);
+                function done(response) {
+                    // alert(JSON.stringify(response.data));
+                    $scope.cityJSONAry = response.data;
+                }
+                function fail(response) {
+                    alert(JSON.stringify(response.data))
+                }
+            }
+
+            $scope.jsonobj;
+            $scope.fetchdata = function () {
+                var url = "/fetch-donors?medKuch=" + $scope.selmed + "&cityKuch=" + $scope.selcity;
+                // alert(url);
+                $http.get(url).then(done, fail);
+                function done(response) {
+                    // alert(JSON.stringify(response.data));
+                    $scope.jsonobj = response.data;
+
+                }
+                function fail(response) {
+                    alert(response.data);
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // {
+            //     var url = "/fetch-card-medicine-record-donor-angular-json-data?medKuch="+$scope.selcity.citynm+"&ctKuch="+$scope.selmed.med;
+            //     // alert($scope.selcity)
+            //     console.log();
+            //     $http.get(url).then(done, fail);
+            //     function done(response) {
+            //         alert(JSON.stringify(response.data));
+
+            //         $scope.jsonobj = response.data;
+            //     }
+            //     function fail(response) {
+            //         alert(JSON.stringify(response.data))
+            //     }
+            // }
+
+            $scope.seljo;
+
+            $scope.doshowdone = function (selectedindex) {
+                // alert(JSON.stringify(selectedindex.data));
+                $scope.seljo = $scope.jsonobj[selectedindex];
+                // alert( $scope.seljo);
+
+            }
+
+
+                 // =============================set user email defautl=============================
+          function setactiveUser() {
+            if(localStorage.getItem("active")==undefined)
+            {
+              location.href="index.html"
+              return;
+            }
+ 
+        var au = localStorage.getItem("active");
+        $("#exampleInputEmail").val(au).prop("readonly",true); 
+        $("#spanid").html(au);
+        // alert(au);
+
+      }
+      setactiveUser();
+
+
+      
+           
+        })
+    </script>
+
+</head>
+
+<body style="font-family:sans-serif ; " ng-app="mymodule" ng-controller="mycontroller" ng-init="fetchCities();fetchMeds();">
+    <!--==============================NAVBAR====================================-->
+
+    <nav class=" navbar bg-color ">
+        <div class="rows ms-5">
+
+            <div class="col-12 ">
+                <h1>       <img src="pics/Screenshot_2023-07-29_195533-removebg-preview.png"  width="50"  alt=""> &ensp;HelpRxHaven</h1>
+            </div>
+           </div>
+       
+    </nav>
+        <!-- ===============================================Heading================================================= -->
+
+    <div class="row mt-5 mb-0">
+        <div class="col-md-6 offset-md-3">
+            <center>
+                <h1 style=" font-family: Gabriola, Times, serif;font-size: 1.5cm;">Track Down Your Medical Aids </h1>
+            </center>
+        </div>
+    </div>
+    <!-- ====================select city==================== -->
+    <label class="  col-1 offset-2   mt-5 " for="CityNAME">Select City:</label>
+    <select class="rounded col-2 mt-5 mb-5 btn btn-outline-secondary custom-bg-color" id="CityNAME" ng-model="selcity" ng-change="showCity();">
+        <option value="" disabled hidden selected>Select City</option>
+        <option ng-repeat="obj in cityJSONAry" value="{{obj.citynm}}">{{obj.citynm}}</option>
+    </select>
+    <!-- ======================================select medicine from medaviltable====================================== -->
+    <label class="col-1 offset-2 mt-5" for="MedicineName">Select Medicine:</label>
+    <select class="rounded col-2 mt-5 mb-5 btn  btn-outline-secondary custom-bg-color" id="MedicineName" ng-model="selmed"
+        ng-change="showmed();">
+        <option value="" disabled hidden selected>Select Medicine</option>
+        <option ng-repeat="obj in mediJSONary" value="{{obj.med}}">{{obj.med}}</option>
+    </select>
+
+    <!-- ===============================================Fetch btn================================================ -->
+
+    <!-- ===============================================Fetch btn================================================ -->
+    <center>
+
+        <input type="button" value="Fetch Donors Data" ng-click="fetchdata()" class="rounded mt-5 mb-5 btn btn-outline custom-bg-color">
+
+
+
+
+
+
+
+
+    </center>
+    <div class="row ms-2 justify-content-between">
+        <div class="col-md-3" ng-repeat="obj in jsonobj">
+            <div class="card">
+                <img  src="pics/man (2).png" width="50px" height="350px" class="rounded-5 card-img-top" alt="...">
+                <img ng-if="obj.gender === 'Female'" src="pics/woman.png" class="rounded-5 card-img-top" alt="...">
+                <!-- <img src="upload/{{obj.photonm || 'default-image.jpg'}}" width="100" height="100" class="rounded-5 card-img-top" alt="..."> -->
+    
+                <div class="card-body">
+                    <h5 class="card-title"> <b>Name:</b> {{obj.name}} <br><b>Contact:</b> {{obj.contact}} <br><b>Medicine:</b> {{obj.med}} <br><b>Appointment Slots:</b> {{obj.avilfrom}} To {{obj.avilto}}</h5>
+                    <p class="card-text"></p>
+                    <a href="#" class="btn btn-outline custom-bg-color" data-bs-toggle="modal" data-bs-target="#modaldetails" ng-click="doshowdone($index);">More Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="modal fade " tabindex="-1" id="modaldetails">
+        <div class="modal-dialog modal-dialog-centered modal-lg col-5">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{seljo.emailid}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <b>Name:</b> {{seljo.name}} <br>
+                        <b>Contact:</b>{{seljo.contact}} <br>
+                        <b>Address:</b> {{seljo.address}} <br>
+                        <b>Medicine:</b> {{seljo.med}} <br>
+                        <b>Container Type:</b>{{seljo.packing}} <br>
+                        <b>Expiry date:</b> {{seljo.expdate}} <br>
+                        <b>Appointment Slots:</b> {{seljo.avilfrom}} To {{seljo.avilto}}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn  btn-outline custom-bg-color" data-bs-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ===============================================form================================================= -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

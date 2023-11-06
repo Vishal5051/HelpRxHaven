@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HelpRxHaven</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    
+    <!-- =============================StyleSheet======================================== -->
+    <style>
+       .bg-color {
+            background-color: #1f2f3f;
+            ;
+            color: white;
+            /* background-color: #97beb1;; */
+        }
+
+        .custom-bg-color {
+
+            border: #1f2f3f 2px solid;
+        }
+
+        .custom-bg-color:hover {
+            background-color: #1f2f3f;
+            color: white;
+
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th {
+            background-color: #1f2f3f;
+            /* background-color:  #6a8f82; */
+            /* background-color: #828a8a; */
+            color: white;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 8px;
+            font-size: .4CM;
+        }
+
+        /* background-color: #afdbcb; */
+
+        tr {
+            color: white;
+        }
+
+        /* tr:nth-child(odd){background-color: #dae9e4;}
+       tr:nth-child(even){background-color: #ecf7f3;} */
+        tr:nth-child(odd) {
+            background-color: #3a4f63;
+        }
+
+        tr:nth-child(even) {    
+            background-color:#4d647b;
+        }
+
+    </style>
+    <!-- =============================Java Script======================================== -->
+    <script src="script/angular.min.js"></script>
+    <script>
+       var module = angular.module("mymodule", []);
+
+module.controller("mycontroller", function ($scope, $http) {
+    $scope.jsonobj;  
+    $scope.fetchdata=function ()
+             {
+                var url = "/fetch-donor-angular-json-data";
+                $http.get(url).then(done,fail);
+                function done (response)
+                {
+                    // alert(JSON.stringify(response.data));
+                    
+                    $scope.jsonobj=response.data;
+                }
+                function fail (response)
+                {
+                    alert(JSON.stringify(response.data))
+                }
+            }
+      
+        })
+    </script>
+
+</head>
+
+<body style="font-family: Verdana, Geneva, Tahoma, sans-serif; " ng-app="mymodule" ng-controller="mycontroller">
+    <!--==============================NAVBAR====================================-->
+    <nav class=" navbar bg-color ">
+        <div class="rows ms-5">
+
+            <div class="col-12 ">
+                <h1>       <img src="pics/Screenshot_2023-07-29_195533-removebg-preview.png"  width="50"  alt=""> &ensp;HelpRxHaven</h1>
+            </div>
+           </div>
+       
+    </nav>
+    <!-- ===============================================Fetch btn================================================ -->
+    <center>
+
+         <!-- ===============================================Heading================================================= -->
+    <div class="row mt-5 mb-0">
+        <div class="col-md-6 offset-md-3">
+            <center>
+                <h1 style=" font-family: Gabriola, Times, serif; font-size: 2cm;">Donor's Portfolio<input type="button" style="font-size: .8cm;" value="Fetch Donors Data" ng-click="fetchdata()"  class="rounded p-3 ms-4 mt-5 mb-5 btn btn-outline custom-bg-color"></h1>
+            </center>
+        </div>
+    </div>
+        
+
+        <table class="col-10" >
+            <thead>
+                <tr class="">
+                    <th>Sr no.</th>
+                    <th>Email</th>
+                    <th>Name</th>
+                    <th>Contact No.</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Zip</th>
+                    <th>ID Proof</th>
+                    <th>Photo</th>
+                    <th>Avilable time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="obj in jsonobj">
+                    <td>{{$index+1}}</td>
+                    <td>{{obj.emailid}} </td>
+                    <td>{{obj.name}} </td>
+                    <td>{{obj.contact}} </td>
+                    <td>{{obj.address}}</td>
+                    <td>{{obj.citynm}}</td>
+                    <td>{{obj.state}}</td>
+                    <td>{{obj.zip}}</td>
+                    <td>{{obj.idproof}}</td>
+                    <td align="center"><img src="upload/{{obj.photonm}}" width="100px" alt=""></td>
+                    <td>{{obj.avilfrom}}to{{obj.avilto}}</td>
+                   
+                   
+              
+                </tr>
+            </tbody>
+        </table>
+
+    </center>
+
+    <!-- ===============================================form================================================= -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

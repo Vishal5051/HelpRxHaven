@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpRxHaven</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    /* Regular style for the button */
+.hover-button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: 1px solid #007bff;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+/* Styles applied on hover */
+.hover-button:hover {
+  background-color: #0056b3;
+  color: #f8f9fa;
+  border: 1px solid #0056b3;
+  box-shadow: 2px 2px 15px 2px rgba(241, 3, 3, 0.2);
+  transform: scale(1.1); /* Increases the size of the button by 10% on hover */
+}
+/* Regular style for the button */
+.advanced-hover-button {
+  background-color: #ff6b6b;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+/* Styles applied on hover */
+.advanced-hover-button:hover {
+  background-color: #1f2f3f;
+  color: #f8f9fa;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px); /* Moves the button 2 pixels up on hover */
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+  opacity: 0.9;
+  background-image: linear-gradient(to right, #1f2f3f, #395f7a);
+  clip-path: polygon(0% 0%, 100% 10%, 100% 90%, 0% 100%);
+}
+
+
+</style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class=" navbar bg-body-tertiary">
+        <div class="rows ms-5">
+
+            <div class="col-12 ">
+                <h1>       <img src="pics/charity.png" width="50" alt=""> &ensp;HelpRxHaven</h1>
+            </div>
+           </div>
+       
+    </nav>
+
+    <!-- Card Section -->
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Card Title
+                    </div>
+                    <div id="MESSRECIVED" name="MESSRECIVED" class="card-body text-center">
+                        Message should be in the center of the card.
+                        <input type="button" value="Hover Me" class="hover-button">
+                        <input type="button" value="Hover Me" class="advanced-hover-button">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bootstrap and jQuery JS links -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

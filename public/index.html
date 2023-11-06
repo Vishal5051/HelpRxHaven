@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HelpRxHaven</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!--==============================StyleSHeet====================================-->
+    <style>
+         .bg-color{
+            background-color: #1f2f3f;;
+            /* background-color: #72c1a6; */
+            color: white;
+        }
+        .sokhay {
+            color: rgb(57, 137, 57);
+            /* font-weight: bold; */
+            /* background-color: lightgreen; */
+            /* float: left; */
+            /* padding: 1px 10px 3px 10px; */
+            /* margin-top: 5px; */
+        }
+
+        .okhay {
+            color:rgb(210, 61, 61);
+            /* font-weight: bold; */
+            /* background-color: lightpink; */
+            /* float: left; */
+            /* padding: 1px 10px 3px 10px; */
+            /* margin-top: 5px; */
+        }
+
+        .custom-input-width {
+            width: 300px;
+            /* Adjust the width as per your requirement */
+        }
+
+        .scale {
+            transition: transform .5s ease;
+        }
+
+        .hover:hover {
+            transform: scale(0.9);
+        }
+    </style>
+    <!--==============================Script====================================-->
+    <script>
+        $(document).ready(function () {
+
+
+            // ==========================saving data =================================
+            $("#submitButton").click(function () {
+
+                var email = $("#exampleInputEmail1").val();
+                var password = $("#exampleInputPassword1").val();
+                var type = $("#typeSelect").val();
+
+                var data = {
+                    email: email,
+                    password: password,
+                    usertype: type
+
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/save-data",
+                    data: data,
+                    success: function (response) {
+                        // Handle the success response here
+                        console.log(response);
+                        $("#signdone").html(response);
+                    },
+                    error: function (error) {
+                        // Handle the error response here
+                        $("#signdone").html(error);
+                        console.log(error);
+                    }
+                });
+            });
+            // ==========================Login data=================================
+            $("#loginsubmitButton").click(function () {
+    var email = $("#loginInputEmail1").val();
+    var password = $("#loginInputPassword1").val();
+
+    var data = {
+        email: email,
+        password: password,
+    };
+
+    $.ajax({
+        type: "get",
+        url: "/login-data",
+        data: data,
+        success: function (response) {
+            localStorage.setItem("active", $("#loginInputEmail1").val());
+
+            if (response == "Donor") {
+                location.href = "dash-donor.html";
+            } else if (response == "Needy") {
+                location.href = "dash-needy.html";
+            } else {
+                $("#loginpwd").html("");
+                $("#loginemail").html("");
+                $("#logindone").html(response).css("color", "rgb(210, 61, 61)");
+            }
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+});
+
+
+            
+            // ==========================Validation on sighup =================================
+            // ==========================Validation on email =================================
+            $("#exampleInputEmail1").blur(function () {
+                var email = $(this).val();
+                var r = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+
+                if (email === "") {
+                    // If email field is empty
+                    $("#email").html("Fill email address");
+                    $("#email").addClass("okhay").removeClass("sokhay");
+                } else if (r.test(email)) {
+                    // If email is valid
+                    $("#email").html("Valid email address");
+                    $("#email").addClass("sokhay").removeClass("okhay");
+
+                    // AJAX request
+                    var obj = {
+                        type: "get",
+                        url: "/chk-email",
+                        data: {
+                            kuchEmail: email
+                        }
+                    };
+
+                    $.ajax(obj).done(function (respkuch) {
+                        $("#email").html(respkuch);
+                    }).fail(function (respkuch) {
+                        $("#email").html(respkuch);
+                    });
+                } else {
+                    // If email is invalid
+                    $("#email").html("Invalid email address");
+                    $("#email").addClass("okhay").removeClass("sokhay");
+                }
+            });
+
+            // ==========================Validation on pwd =================================
+         
+            $("#exampleInputPassword1").blur(function () {
+                var pwd = $("#exampleInputPassword1").val();
+                var r = /(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+
+                // Check if the password field is empty
+                if (pwd === "") {
+                    $("#errPwd").html("Please enter a password.");
+                    $("#errPwd").addClass("okhay").removeClass("sokhay");
+                    return;
+                }
+
+                // Check if the regex for password validation is defined and valid
+                if (typeof r !== 'undefined' && r instanceof RegExp) {
+                    if (r.test(pwd)) {
+                        $("#errPwd").html("Password is strong.");
+                        $("#errPwd").addClass("sokhay").removeClass("okhay");
+                    } else {
+                        $("#errPwd").html("Password: 8+ characters required, (0-9) digit, (!@#$%^&*) special character,  (A-Z) uppercase,(a-z) lowercase.");
+                        $("#errPwd").addClass("okhay").removeClass("sokhay");
+                    }
+                } else {
+                    $("#errPwd").html("Please enter a valid password.");
+                    $("#errPwd").addClass("okhay").removeClass("sokhay");
+                }
+            });
+            // ==========================Validation on login  =================================
+            // ==========================Validation on email =================================
+            $("#loginInputEmail1").blur(function () {
+                var email = $(this).val();
+                var r = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+                $("#logindone").html("");
+                if (email === "") {
+                    // If email field is empty
+                    $("#loginemail").html("Fill email address");
+                    $("#loginemail").addClass("okhay").removeClass("sokhay");
+                } else if (r.test(email)) {
+                    // If email is valid
+                    $("#loginemail").html("Valid email address");
+                    $("#loginemail").addClass("sokhay").removeClass("okhay");
+
+                   
+                } else {
+                    // If email is invalid
+                    $("#loginemail").html("Invalid email address");
+                    $("#loginemail").addClass("okhay").removeClass("sokhay");
+                }
+            });
+            // ==========================Validation on pwd =================================
+            $("#loginInputPassword1").blur(function () {
+                var pwd = $("#loginInputPassword1").val();
+                var r = /(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
+                $("#logindone").html("");
+
+                // Check if the password field is empty
+                if (pwd === "") {
+                    $("#loginpwd").html("Please enter a password.");
+                    $("#loginpwd").addClass("okhay").removeClass("sokhay");
+                    return;
+                }
+
+                // Check if the regex for password validation is defined and valid
+                // if (typeof r !== 'undefined' && r instanceof RegExp) {
+                //     if (r.test(pwd)) {
+                //         $("#loginpwd").html("Password is strong.");
+                //         $("#loginpwd").addClass("sokhay").removeClass("okhay");
+                //     } else {
+                //         $("#loginpwd").html("Password: 8+ characters required, (0-9) digit, (!@#$%^&*) special character,  (A-Z) uppercase,(a-z) lowercase.");
+                //         $("#loginpwd").addClass("okhay").removeClass("sokhay");
+                //     }
+                // } else {
+                //     $("#loginpwd").html("Please enter a valid password.");
+                //     $("#loginpwd").addClass("okhay").removeClass("sokhay");
+                // }
+            });
+            //===========================================opperation on pwd===========================================
+            $(".fa-solid").mouseup(function(){
+                $(this).removeClass("fa-eye").addClass("fa-eye-slash");
+                $("#loginInputPassword1").prop("type","password");
+            });
+                //============================================================
+                $(".fa-solid").mousedown(function(){
+                $(this).addClass("fa-eye").removeClass("fa-eye-slash");
+                $("#loginInputPassword1").prop("type","text");
+            });
+
+
+
+
+        });
+
+    </script>
+
+</head>
+
+<body style="font-family: Verdana, Geneva, Tahoma, sans-serif; ">
+
+    <!--==============================NAVBAR====================================-->
+    <nav class=" navbar bg-color "  >
+        <div class="rows ms-5" >
+            <div class="col-12  ">
+
+                <h1> <img src="pics/Screenshot_2023-07-29_195533-removebg-preview.png" width="50" alt=""> &ensp;HelpRxHaven</h1>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center  align-items-center col-md-1  offset-md-2 me-5 pe-5 ">
+
+
+            <!-- <img src="pics/Capture.PNG" alt="Logo" width="190px" class="offset-md-5 d-inline-block align-text-top"> -->
+            <button type="button" id="sigbtn" class="btn btn-outline-light offset-md-3" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">
+                Signup
+            </button>
+            <button type="button" id="loginbtn" class="btn btn-outline-light ms-1  " data-bs-toggle="modal"
+                data-bs-target="#loginModal">
+                Login
+            </button>
+
+        </div>
+    </nav>
+    <!--=====================================================signup_modal================================================-->
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Signup</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body ">
+                    <center>
+
+                        <!--==============================logo====================================-->
+                        <div class="log">
+                            <img src="pics/avatar.png" width="100px" height="100px" class="m-3 rounded-circle" alt>
+                            <!--==============================signupdetail====================================-->
+
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Email address</label>
+                                    <input type="email" class="form-control custom-input-width" id="exampleInputEmail1"
+                                        aria-describedby="emailHelp">
+                                    <center>
+                                        <p>
+                                        <div id="email" class="form-text"></div>
+                                        <!-- <div id="errEmail" class="ms-5 border"></div> -->
+
+                                        </p>
+                                    </center>
+
+                                </div>
+                                <div class="mb-3">
+                                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                                    <input type="password" class="form-control custom-input-width"
+                                        id="exampleInputPassword1">
+                                    <p>
+                                    <div id="errPwd" class="form-text"></div>
+                                    </p>
+                                </div>
+
+                                <!--==============================signupdetail====================================-->
+                                Type <select class="mb-5 form-select custom-input-width" id="typeSelect">
+                                    <option disabled hidden selected value="Select">Select</option>
+                                    <option value="Donor">Donor</option>
+                                    <option value="Needy">Needy</option>
+
+                                </select>
+
+                            </form>
+
+                        </div>
+                        <div id="signdone" class="form-text"></div>
+                    </center>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                    <button type="button" id="submitButton" class="btn btn-primary m-3">Signup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--======================================================Login_modal============================================================-->
+
+    <div class="modal fade " id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="Login">Login</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                </div>
+                <div class="modal-body ">
+                    <center>
+
+                        <!--==============================logo====================================-->
+                        <div class="log">
+                            <img src="pics/avatar (1).png" width="100px" height="100px" class="m-1 rounded-circle" alt>
+                            <!--==============================signupdetail====================================-->
+
+                            <form method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="loginInputEmail1" class="form-label">Email address</label>
+                                    <input type="email" class="form-control custom-input-width" id="loginInputEmail1" aria-describedby="emailHelp">
+                                    <div id="loginemail" class="form-text"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="loginInputPassword1" class="form-label">Password</label>
+                                   <div class="d-flex d-inline ">
+                                    <input type="password" style="margin-left:18%;" class="form-control custom-input-width  " id="loginInputPassword1">
+                                    <i class="fa-sharp fa-solid fa-eye-slash ms-3 scale pt-2 "></i>
+                                   </div>
+                                    <div id="loginpwd" class="form-text"></div>
+                                </div>
+                            </form>
+                            
+
+                        </div>
+                        <div id="logindone" class="form-text"></div>
+                    </center>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                    <button type="button" id="loginsubmitButton" class="btn btn-primary m-3">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- =======================================================================COursel ======================================================================= -->
+    <div id="carouselExampleCaptions" data-bs-ride="carousel" class="carousel slide">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+                aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="pics/bann (4).png" height="700" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5></h5>
+                    <p></p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="pics/bann (3).png" height="700" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5></h5>
+                    <p></p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="pics/bann (2).png " height="700" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5></h5>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    <!-- ==================================our services================================== -->
+    <blockquote class="blockquote   col-12 bg-color ">
+        <div class="col-2 offset-5  d-flex justify-content-center">
+            <p>
+            <h4>Our Services</h4>
+            </p>
+
+        </div>
+    </blockquote>
+    <!-- ==================================card of services================================== -->
+    <div class="rows d-flex" >
+        <div class="col-12 d-flex justify-content-sm-around flex-row ">
+            <div class="card hover scale rounded-5" style="width: 18rem;">
+                <img src="pics/donation.jpg" height="200" class="card-img-top rounded-5" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title justify-content-center d-flex">Donation</h5>
+                    <p class="card-text">Be a Lifeline: Donate Medicine, Empower Lives. Connecting Medicine Donors with
+                        Needy Hearts!</p>
+                </div>
+            </div>
+            <div class=" card rounded-5 hover scale" style="width: 18rem;">
+                <img src="pics/needy.jpg" class="card-img-top rounded-5" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title justify-content-center d-flex">Needy </h5>
+                    <p class="card-text ">"Empowering Health, Restoring Hope: Providing Essential Medicines to Those in
+                        Need!"</p>
+                </div>
+            </div>
+            <div class="card rounded-5 hover scale" style="width: 18rem;">
+                <img src="pics/non-profit.jpg" class="card-img-top rounded-5" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title justify-content-center d-flex">Non Profit</h5>
+                    <p class="card-text">"Your Generosity at Work: Giving Back Through Non-Profit Medicine Donations,
+                        Healing Lives Without Borders!"</p>
+                </div>
+            </div>
+            <div class="card rounded-5 hover scale" style="width: 18rem;">
+                <img src="pics/24.jpg" class="card-img-top rounded-5" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title justify-content-center d-flex">24 Hour Services</h5>
+                    <p class="card-text">"Round-the-Clock Care: Your Health Matters Every Hour. Experience 24/7 Support
+                        on Our Website!"</p>
+                </div>
+            </div>
+            <div class="card rounded-5 hover scale justify-content-center d-flex" style="width: 18rem;">
+                <img src="pics/term and condition.jpg" height="200" class="card-img-top rounded-5" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title justify-content-center d-flex">Terms and Conditions</h5>
+                    <p class="card-text">"Guiding Health and Trust: Our Transparent Terms and Conditions Ensure a Safe
+                        and Inclusive Experience."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ==================================DEVELOVPED BY================================== -->
+    <blockquote class="blockquote  mt-5 col-12 bg-color">
+        <div class="col-2 offset-5  d-flex justify-content-center">
+            <p>
+            <h4>Develovped By</h4>
+            </p>
+
+        </div>
+    </blockquote>
+    <!-- ==================================card of Developers================================== -->
+    <div class=" mb-5">
+        <div class="row  ">
+            <div class="col-md-6 ">
+                <div class="row  d-flex">
+                    <div class="col-4 mt-4 offset-1 ps-5 rounded-5">
+                        <img src="pics/vishal (2).png" class=" mb-4 rounded-5 img-fluid" alt="Vishal Chandora">
+                    </div>
+                    <div class="col-6   offset-1 mt-5">
+                        <h4>Name: Vishal Chandora </h4>
+                        <p>Email: vkc335524@gmail.com</p>
+                        <p>Address: Hanumangarh, Rajasthan</p>
+                        <p>Contact No: 8574463333</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 ">
+                <div class="row d-flex ">
+                    <div class="col-4 mt-4  ps-5  rounded-5">
+                        <img src="pics/rajivsir.png" class=" mb-4 rounded-5 img-fluid" alt="Rajesh Bansal">
+                    </div>
+                    <div class="col-6   offset-1 mt-5">
+                        <p>Under The Guidance Of</p>
+                        <h4>Name: Rajesh Bansal (Author of Real Java)</h4>
+                        <p>Address: Banglore Computer Education, Bathinda</p>
+                        <p>Contact No: 9872246056</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ==================================DEVELOVPED BY================================== -->
+    <blockquote class="blockquote  mt-5 col-12 bg-color ">
+        <div class="col-2 offset-5  d-flex justify-content-center">
+            <p>
+            <h4>Reach Us</h4>
+            </p>
+
+        </div>
+    </blockquote>
+    <!-- ==================================Address ================================== -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row d-flex justify-content-center">
+
+                <div class="col-6 offset-1 mt-5">
+                    <h4><img src="pics/email.png" width="100" alt=""> VKC335524@gmail.com</h4>
+                    <h4><img src="pics/instagram.png" width="100" alt=""> @vishal00o7</h4>
+                    <h4><img src="pics/linkedin.png" width="100" alt=""> vkchandora5051</h4>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mt-5">
+            <iframe class="me-5 rounded-5 float-end"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3447.8805715960475!2d74.94975317627699!3d30.211955910613312!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391732a4f07278a9%3A0x4a0d6293513f98ce!2sBanglore%20Computer%20Education!5e0!3m2!1sen!2sin!4v1690289132904!5m2!1sen!2sin"
+                width="800" height="300" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

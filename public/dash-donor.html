@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" >
+  <title>HelpRxHaven</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+  <!-- =============================StyleSheet======================================== -->
+  <style>
+     .bg-color{
+            background-color: #1f2f3f;;
+            color: white;
+            /* background-color: #97beb1;; */
+        }
+        label {
+            font-size: .5cm;
+            font-weight: 520;
+        }
+
+        .custom-bg-color {
+            background-color: #1f2f3f;
+            color: white;
+            border: #1f2f3f 2px solid;
+        }
+
+        .custom-bg-color:hover {
+            background-color: #425b77;
+            border: #38434e 2px solid;
+            color: #ffffff;
+
+        }
+    .custom_size {
+      width: 400px;
+      height: 400px;
+    }
+
+    .custom_decoration {
+      text-decoration: none;
+
+    }
+
+    #setbtn {
+      border: none;
+    }
+  </style>
+  <!-- =============================Scrpit======================================== -->
+  <script>
+
+    $(document).ready(function () {
+      $("#PwdChng").click(function () {
+        var email = $('#exampleInputEmail').val();
+        var oldPwd = $('#oldpwd').val();
+        var newPwd = $('#newpwd').val();
+        var confirmPwd = $('#confpwd').val();
+        var obj = {
+          type: "post",
+          url: "/chng-pwd",
+          data: {
+            kuchEmail: email,
+            kuchop: oldPwd,
+            kuchnp: newPwd,
+            kuchcp: confirmPwd
+          }
+        };
+        $.ajax(obj).done(function (respkuch) {
+          // alert(respkuch);
+          $("#ErrPwd").html(respkuch);
+        }).fail(function (errkuch) {
+          alert(JSON.stringify(errkuch));
+          $("#ErrPwd").html(errkuch);
+        });
+      });
+          // =============================set user email defautl=============================
+          function setactiveUser() {
+            if(localStorage.getItem("active")==undefined)
+            {
+              location.href="index.html"
+              return;
+            }
+ 
+        var au = localStorage.getItem("active");
+        $("#exampleInputEmail").val(au).prop("readonly",true); 
+        $("#spanid").html(au);
+        // alert(au);
+
+      }
+      setactiveUser();
+
+
+      // =================logout fesature=================
+      $("#logoutbtn").click(function() {
+        localStorage.removeItem("active");
+        location.href="index.html";
+    });
+  });
+
+  </script>
+  
+</head>
+
+<body style="font-family: Verdana, Geneva, Tahoma, sans-serif; ">
+  <!--==============================NAVBAR====================================-->
+  <nav class=" navbar bg-color">
+    <div class="rows ms-5">
+
+        <div class="col-12 ">
+          <h1>       <img src="pics/Screenshot_2023-07-29_195533-removebg-preview.png" width="50" alt=""> &ensp;HelpRxHaven</h1>
+        </div>
+       </div>
+    <div class="d-flex justify-content-center  align-items-center col-md-1  offset-md-2 me-5 pe-5 ">
+
+    
+      <button type="button" id="logoutbtn" class="btn   btn-outline-light   " >Logout</button>
+
+    </div>
+</nav>
+
+  
+        <!-- ===============================================Heading================================================= -->
+        <div class="row">
+          <div class="col-md-4 offset-md-4 ">
+              <center>
+                <h1>
+                  
+                </h1>
+                  <h1 style=" font-family: Gabriola, Times, serif; font-weight: 600; font-size: 1.2cm;">Welcome :  <span id="spanid"></span> <br><br>Philanthropic Dashboard </h1>
+              </center>
+          </div>
+      </div>
+
+  <!-- ===============================================Cards================================================= -->
+  <div class="row row-cols-1  col-md-11 g-1 offset-md-1   mt-5">
+    <a href="profile_donor.html" class="col custom_size custom_decoration">
+      <div class="col custom_size">
+        <div class="card  ">
+
+          <img src="pics/student.png" class="card-img-top " alt="...">
+          <div class="card-body">
+            <h5 class="card-title"><Center>Profile</Center></h5>
+
+          </div>
+        </div>
+      </div>
+    </a>
+    <a href="avail-med.html" class="col custom_size custom_decoration">
+      <div class="col custom_size">
+        <div class="card">
+          <img src="pics/medicine (2).png" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title  "><center>Avil Medicines</center></h5>
+
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <a href="med-manager.html" class="col custom_size custom_decoration ">
+      <div class="col custom_size">
+        <div class="card">
+          <img src="pics/logistics.png" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title"><center>Manage Medicie</center></h5>
+
+          </div>
+        </div>
+      </div>
+    </a>
+    <button type="button" id="setbtn" class="  custom_size" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <div class="col custom_size">
+        <div class="card">
+          <img src="pics/process.png" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title"><center>Setting</center></h5>
+
+          </div>
+        </div>
+      </div>
+
+    </button>
+
+  </div>
+  <!-- ===========================Setting-MOdal=========================== -->
+  <!-- Button trigger modal -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel"> Setting</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <center>
+            <h1>Change Password</h1>
+          </center>
+          <!--==============================signupdetail====================================-->
+
+          <form method="post" enctype="multipart/form-data">
+            <div class="col-8 offset-2 mt-5 mb-3">
+              <label for="exampleInputEmail" class="form-label">Email address</label>
+              <input type="email" class="form-control custom-input-width" id="exampleInputEmail"
+                aria-describedby="emailHelp">
+              <div id="email" class="form-text"></div>
+            </div>
+            <div class="col-8 offset-2 mb-3">
+              <label for="oldpwd" class="form-label">Old Password</label>
+              <input type="password" class="form-control custom-input-width" id="oldpwd">
+            </div>
+            <div class="col-8 offset-2 mb-3">
+              <label for="newpwd" class="form-label">New Password</label>
+              <input type="password" class="form-control custom-input-width" id="newpwd">
+            </div>
+            <div class="col-8 offset-2 mb-3">
+              <label for="confpwd" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control custom-input-width" id="confpwd">
+            </div>
+            <div class="col-8 offset-2" id="ErrPwd">
+
+            </div>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline custom-bg-color " data-bs-dismiss="modal">Close</button>
+          <!-- <button type="button" class="btn btn-primary" id="PwdChng" onclick="saveChanges()">Save changes</button> -->
+          <button type="button" class="btn btn-outline custom-bg-color" id="PwdChng">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HelpRxHaven</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <!-- =============================StyleSheet======================================== -->
+    <style>
+        .bg-color {
+            background-color: #1f2f3f;
+            ;
+            color: white;
+            /* background-color: #97beb1;; */
+        }
+
+        #main {
+            border: 1px black solid;
+            width: 1200px;
+        }
+
+        label {
+            font-size: .5cm;
+            font-weight: 520;
+        }
+
+        .custom-bg-color {
+            background-color: #1f2f3f;
+            color: white;
+            border: #1f2f3f 2px solid;
+        }
+
+        .custom-bg-color:hover {
+            background-color: #ffffff;
+            border: #1f2f3f 2px solid;
+            color: #1f2f3f;
+
+        }
+    </style>
+    <!-- =============================Java Script======================================== -->
+    <script>
+        function doPre(refile, preving) {
+            const [file] = refile.files
+            if (file) {
+                preving.src = URL.createObjectURL(file)
+            }
+        }
+
+        $(document).ready(function () {
+            // Button click event for search
+            $("#btnSearch").click(function () {
+                var emailKu = $("#inputEmail4").val();
+                var obj = {
+                    type: "get",
+                    url: "/get-json-record",
+                    data: { kuchEmail: emailKu }
+                };
+                $.ajax(obj)
+                    .done(function (reapJsonKuch) {
+                        // alert(JSON.stringify(reapJsonKuch));
+                        //    alert("enter in ")
+                        $("#inputname").val(reapJsonKuch[0].name);
+                        $("#inputAddress").val(reapJsonKuch[0].address);
+                        $("#inputcontact").val(reapJsonKuch[0].contact);
+                        $("#inpcity").val(reapJsonKuch[0].citynm);
+                        $("#inputZip").val(reapJsonKuch[0].zip);
+                        $("#inputState").val(reapJsonKuch[0].state);
+                        $("#inputgender").val(reapJsonKuch[0].gender);
+                        $("#inputID").val(reapJsonKuch[0].idproof);
+                        $("#txttime").val(reapJsonKuch[0].txttime);
+                        $("#txttime2").val(reapJsonKuch[0].txttime2);
+                        $("#imgPre").prop("src", "upload/" + reapJsonKuch[0].photonm);
+                           $("#hdn").val(reapJsonKuch[0].photonm);
+                    })
+                    .fail(function (err) {
+                        alert(JSON.stringify(err));
+                    });
+
+            });
+
+            // Function to set the active user from localStorage
+            function setactiveUser() {
+                var au = localStorage.getItem("active");
+                $("#inputEmail4").val(au).prop("readonly", true);
+            }
+
+            setactiveUser();
+        });
+
+
+    </script>
+
+</head>
+
+<body style="font-family: Verdana, Geneva, Tahoma, sans-serif;">
+    <!--==============================NAVBAR====================================-->
+    <nav class=" navbar bg-color ">
+        <div class="rows ms-5">
+
+            <div class="col-12 ">
+                <h1> <img src="pics/Screenshot_2023-07-29_195533-removebg-preview.png" width="50" alt="">
+                    &ensp;HelpRxHaven</h1>
+            </div>
+        </div>
+
+    </nav>
+    <!-- ===============================================form================================================= -->
+    <div class="row mt-5 mb-0">
+        <div class="col-md-8 offset-md-2">
+            <center>
+                <h1 style=" font-family: Gabriola, Times, serif; font-size: 2cm;">Fill Your Details</h1>
+            </center>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- ===============================================form================================================= -->
+
+
+    <center>
+
+
+        <div class="row col-md-10">
+            <div class="col-md-12">
+                <form method="post" enctype="multipart/form-data" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="inputEmail4" class="form-label">Email</label>
+                        <input type="email" class="form-control" name="inputEmail4" id="inputEmail4">
+                    </div>
+                    <!-- <div class="col-md-6">
+                                <label for="inputEmail4" class="form-label">Email</label>
+                                <input type="email" class="form-control"
+                                    name="inputEmail4" id="inputEmail4">
+                            </div> -->
+
+                    <div class="col-md-2 mt-5 ">
+                        <button type="button" class="btn btn-outline custom-bg-color  " id="btnSearch">Search</button>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="inputname" class="form-label">Name</label>
+                        <input type="text" id="inputname" class="form-control" name="inputname">
+                    </div>
+                    <!-- <div class="col-md-5">
+                                <label for="inputname" class="form-label">Name</label>
+                                <input type="text" id="inputname"
+                                    class="form-control" name="inputname">
+                            </div> -->
+                    <div class="col-md-4">
+                        <label for="inputcontact" class="form-label ">Contact
+                            Number</label>
+                        <input type="number" id="inputcontact" class="form-control" name="inputcontact">
+                    </div>
+                    <div class="row">
+                        <div class="col-9">
+                            <label for="inputAddress" class="form-label">Address</label>
+                            <input type="text" id="inputAddress" class="form-control" name="inputAddress"
+                                placeholder="1234 Main St">
+                        </div>
+
+                        <div class="col-2">
+                            <label for="inpcity" class="form-label">City</label>
+
+                            <input type="text" id="inpcity" class="form-control " placeholder="City Name........"
+                                name="inpcity">
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="inputState" class="form-label">State
+                                or Territories</label>
+                            <input type="text" name="inputState" class="form-control" maxlength="60" id="inputState">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="inputZip" class="form-label">Zip</label>
+                            <input type="number" id="inputZip" minlength="6" class="form-control" name="inputZip">
+
+                        </div>
+                        <div class="col-md-3">
+                            <label for="inputgender" class="form-label">Gender</label>
+                            <select name="inputgender" id="inputgender" class="form-select">
+                                <option value="N" disabled selected hidden>Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="inputState" class="form-label">Available:-</label>
+                            <br>
+                            From<input type="time" name="txttime" id="txttime"> To
+                            <input type="time" name="txttime2" id="txttime2">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="inputID" class="form-label">ID
+                                Proof</label>
+                            <select class="form-select" id="inputID" name="inputID" aria-label="Default select example">
+                                <option selected disabled hidden>ID
+                                    Proof</option>
+
+                                <option value="Aadhaar Card">Aadhaar
+                                    Card</option>
+                                <option value="Driver's License">Driver's
+                                    License</option>
+                                <option value="Passport">Passport</option>
+                                <option value="Voter ID Card">Voter ID
+                                    Card</option>
+                                <option value="PAN Card">PAN Card</option>
+                                <option value="Student ID Card">Student
+                                    ID Card</option>
+                                <option value="Employee ID Card">Employee
+                                    ID Card</option>
+                                <option value="Bank Passbook">Bank
+                                    Passbook</option>
+                                <option value="Ration Card">Ration Card</option>
+                                <option value="Utility Bill">Utility
+                                    Bill</option>
+                            </select>
+
+                        </div>
+                        <div class="col-md-4 my-4 p-2  ">
+
+                            <input type="file" name="photo" class="float-start " onchange="doPre(this,imgPre)"
+                                accept="image/*">
+                            <img src id="imgPre" name="imgPre" class="float-end" width="100px" height="100px " alt=" ">
+                            <!-- ==================fro pic save while update================== -->
+                            <input type="hidden" name="hdn" id="hdn">
+
+                        </div>
+
+                        <div class="col-12 ">
+                            <button type="submit" class="btn btn-outline custom-bg-color"
+                                formaction="/signup-save-data">Save</button>
+
+                            <button type="submit" class="btn btn-outline custom-bg-color"
+                                formaction="/Profile-update-data">Update
+                                Account</button>
+
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+    </center>
+    <!-- ===============================================form================================================= -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
