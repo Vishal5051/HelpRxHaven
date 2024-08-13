@@ -2,11 +2,14 @@ var express = require("express");
 // var mysql = require('mysql');
 var mysql = require('mysql2');
 var fileuploader = require("express-fileupload");
-var app = express();
-app.listen(2003, function () {
-    console.log("server started....");  
-});
 
+var app = express();
+app.listen(process.env.PORT || 3000, function () {
+    console.log(`Server started on port ${process.env.PORT || 3000}...`);
+});
+var dotenv = require('dotenv');
+// Load environment variables from .env file
+dotenv.config();
 // access to public folder===============================================
 app.use(express.static("public"));
 // middleware===============================================
@@ -16,11 +19,11 @@ app.use(express.json());
 app.use(fileuploader());  
 
 var doconfig = {
-    host: '127.0.0.1',
-    user: 'root',
-    password: "1234",
-    database: 'DBMR'
-}
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+};
 var docon = mysql.createConnection(doconfig);
 docon.connect(function(err) {
     if (err == null)
@@ -36,7 +39,7 @@ app.get("/", function (req, resp) {
 // =============================URL  Handler doner profile=================================
 app.get("/profile", function (req, resp) {
     
-    resp.sendFile(process.cwd() + "/public/profile_proj.html");
+    resp.sendFile(process.cwd() + "/public/profile_proj.html"); 
 });
 // =============================URL Handler avil med page=================================
 app.get("/AvilMedic", function (req, resp) {
@@ -227,7 +230,7 @@ app.post("/Profile-update-data", function (req, resp)
     var FileName;
 
     if (req.files != null) {
-        FileName = req.files.photo.name;
+        FileName = req.files.photo.name;  
         var path = process.cwd() + "/public/upload/" + FileName;
         req.files.photo.mv(path);
     }
@@ -661,7 +664,7 @@ app.get("/get-citiess",function(req,resp)
 // ===============================fetch medicine name============================
 
 app.get("/get-medicines",function(req,resp)
-{
+{ 
   //fixed                             //same seq. as in table
     docon.query("select distinct med from medsavailable",function(err,resultTableJSON)
     {
